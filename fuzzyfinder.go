@@ -564,9 +564,26 @@ func (f *finder) readKey(ctx context.Context) error {
 				f.state.cursorX += runewidth.RuneWidth(f.state.input[f.state.x])
 				f.state.x++
 			}
-		case tcell.KeyCtrlA, tcell.KeyHome:
+		case tcell.KeyCtrlA:
+			if f.opt.multi {
+				for _, m := range f.state.matched {
+					if _, ok := f.state.selection[m.Idx]; !ok {
+						f.state.selection[m.Idx] = f.state.selectionIdx
+						f.state.selectionIdx++
+					}
+				}
+				return nil
+			}
 			f.state.cursorX = 0
 			f.state.x = 0
+		case tcell.KeyHome:
+			f.state.cursorX = 0
+			f.state.x = 0
+		case tcell.KeyCtrlD:
+			if f.opt.multi {
+				f.state.selection = map[int]int{}
+				return nil
+			}
 		case tcell.KeyCtrlE, tcell.KeyEnd:
 			f.state.cursorX = runewidth.StringWidth(string(f.state.input))
 			f.state.x = len(f.state.input)

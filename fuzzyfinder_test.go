@@ -627,6 +627,13 @@ func TestFindMulti(t *testing.T) {
 			{tcell.KeyTab, rune(tcell.KeyTab), tcell.ModNone},
 			{tcell.KeyTab, rune(tcell.KeyTab), tcell.ModNone},
 		}...), expected: []int{0}},
+		"ctrl-a selects all": {events: keys([]input{
+			{tcell.KeyCtrlA, rune(tcell.KeyCtrlA), tcell.ModCtrl},
+		}...), expected: []int{0, 1, 2, 3, 4, 5, 6, 7, 8}},
+		"ctrl-a twice deselects all": {events: keys([]input{
+			{tcell.KeyCtrlA, rune(tcell.KeyCtrlA), tcell.ModCtrl},
+			{tcell.KeyCtrlA, rune(tcell.KeyCtrlA), tcell.ModCtrl},
+		}...), expected: []int{0}},
 		"empty result": {events: runes("fffffff"), abort: true},
 		"resize window": {events: []tcell.Event{
 			tcell.NewEventResize(10, 10),
